@@ -1,0 +1,123 @@
+/* === Reset + Font === */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  margin: 0;
+  padding: 0;
+
+  padding-top: 70px; /* tương đương chiều cao navbar */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 600;
+}
+
+/* === Navbar === */
+.navbar {
+  background-color: #212529;
+}
+
+.navbar a {
+  color: #ccc;
+  margin-left: 15px;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: #fff;
+}
+
+/* === Hero / Section Intro === */
+.text-center h1 {
+  font-size: 2.5rem;
+  margin-top: 2rem;
+}
+
+.text-center p.lead {
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* === Cards (Sản phẩm) === */
+.card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+  height: 300px;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.card-body {
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  flex-grow: 1;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.btn {
+  border-radius: 25px;
+  padding: 0.4rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-dark:hover {
+  background-color: #212529;
+  color: #fff;
+}
+
+/* === Footer === */
+footer {
+  background-color: #212529;
+  color: #ccc;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+/* === Responsive tweaks === */
+@media (max-width: 768px) {
+  .card-img-top {
+    height: 220px;
+  }
+
+  .text-center h1 {
+    font-size: 2rem;
+  }
+
+  .text-center p.lead {
+    font-size: 1rem;
+  }
+}

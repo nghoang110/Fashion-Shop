@@ -1,0 +1,66 @@
+<%- include("../partials/header") %>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Đơn hàng của bạn</h2>
+
+  <% if (orders.length === 0) { %>
+  <p>Bạn chưa có đơn hàng nào.</p>
+  <% } else { %> <% orders.forEach(order => { %>
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header d-flex justify-content-between">
+      <strong>Mã đơn: <%= order._id %></strong>
+      <span>Ngày: <%= new Date(order.createdAt).toLocaleString() %></span>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>Trạng thái:</strong>
+        <span
+          class="badge <% if (order.status === 'cancelled') { %> bg-danger <% } else if (order.status === 'pending') { %> bg-warning text-dark <% } else if (order.status === 'processing') { %> bg-primary <% } else if (order.status === 'shipped') { %> bg-info <% } else if (order.status === 'delivered') { %> bg-success <% } else { %> bg-secondary <% } %>"
+        >
+          <%= order.status %>
+        </span>
+      </p>
+
+      <p>
+        <strong>Tổng tiền:</strong>
+        <%= order.totalAmount.toLocaleString() %>₫
+      </p>
+
+      <% if (!["shipped", "delivered", "cancelled"].includes(order.status)) { %>
+      <form
+        method="POST"
+        action="/user/orders/<%= order._id %>/cancel"
+        onsubmit="return confirm('Bạn có chắc muốn huỷ đơn hàng này?');"
+      >
+        <button type="submit" class="btn btn-danger btn-sm mt-2">
+          Huỷ đơn hàng
+        </button>
+      </form>
+      <% } else if (order.status === "cancelled") { %>
+      <p class="text-danger"><em>Đơn hàng đã huỷ</em></p>
+      <% } %>
+
+      <h6 class="mt-4">Sản phẩm:</h6>
+      <div class="row">
+        <% order.items.forEach(item => { %>
+        <div class="col-md-6 d-flex align-items-center mb-2">
+          <img
+            src="<%= item.product.image %>"
+            alt="<%= item.product.name %>"
+            width="60"
+            height="60"
+            class="me-3 rounded shadow-sm"
+          />
+          <div>
+            <strong><%= item.product.name %></strong><br />
+            Số lượng: <%= item.quantity %>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+  <% }) %> <% } %>
+</div>
+
+<%- include("../partials/footer") %>

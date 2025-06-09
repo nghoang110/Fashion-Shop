@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Header Slider</title>
+    <link rel="stylesheet" href="/css/slide-ctrl.css" />
+  </head>
+  <body>
+    <div class="slider-container">
+      <div class="slider">
+        <div class="slide" style="background-blend-mode: overlay">
+          <img src="/img/header-1.jpg" class="img-fluid rounded-top" alt="" />
+        </div>
+        <div class="slide" style="background-blend-mode: overlay">
+          <img src="/img/header-2.jpg" class="img-fluid rounded-top" alt="" />
+        </div>
+        <div class="slide" style="background-blend-mode: overlay">
+          <img src="/img/header-3.jpg" class="img-fluid rounded-top" alt="" />
+        </div>
+        <div class="slide" style="background-blend-mode: overlay">
+          <img src="/img/header-4.jpg" class="img-fluid rounded-top" alt="" />
+        </div>
+        <div class="slide" style="background-blend-mode: overlay">
+          <img src="/img/header-5.jpg" class="img-fluid rounded-top" alt="" />
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="control-btn prev">❮</button>
+        <button class="control-btn next">❯</button>
+      </div>
+
+      <div class="dots-container"></div>
+    </div>
+
+    <div class="slider-options">
+      <div class="option-row">
+        <div class="option-label">Kiểu chuyển động:</div>
+        <div class="toggle-container">
+          <div class="animation-type">
+            <input
+              type="radio"
+              id="slide"
+              name="animation-type"
+              value="slide"
+              checked
+            />
+            <label for="slide">Trượt</label>
+          </div>
+          <div class="animation-type">
+            <input type="radio" id="fade" name="animation-type" value="fade" />
+            <label for="fade">Mờ dần</label>
+          </div>
+          <div class="animation-type">
+            <input type="radio" id="zoom" name="animation-type" value="zoom" />
+            <label for="zoom">Phóng to</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="option-row">
+        <div class="option-label">Tự động chuyển:</div>
+        <div class="toggle-container">
+          <input type="checkbox" id="auto-play" checked />
+          <label for="auto-play">Bật</label>
+        </div>
+      </div>
+
+      <div class="option-row">
+        <div class="option-label">Tốc độ chuyển (ms):</div>
+        <div class="toggle-container">
+          <input
+            type="range"
+            id="speed"
+            min="1000"
+            max="5000"
+            step="100"
+            value="3000"
+          />
+          <div class="value-display" id="speed-value">3000</div>
+        </div>
+      </div>
+
+      <div class="option-row">
+        <div class="option-label">Thời gian chuyển động (ms):</div>
+        <div class="toggle-container">
+          <input
+            type="range"
+            id="transition-duration"
+            min="200"
+            max="2000"
+            step="100"
+            value="500"
+          />
+          <div class="value-display" id="transition-value">500</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Thành phần chính
+        const slider = document.querySelector(".slider");
+        const slides = document.querySelectorAll(".slide");
+        const prevBtn = document.querySelector(".prev");
+        const nextBtn = document.querySelector(".next");
+        const dotsContainer = document.querySelector(".dots-container");
+
+        // Tùy chọn
+        const animationTypes = document.getElementsByName("animation-type");
+        const autoPlayCheckbox = document.getElementById("auto-play");
+        const speedSlider = document.getElementById("speed");
+        const speedValue = document.getElementById("speed-value");
+        const transitionSlider = document.getElementById("transition-duration");
+        const transitionValue = document.getElementById("transition-value");
+
+        // Trạng thái
+        let currentIndex = 0;
+        let autoPlayInterval;
+        let animationType = "slide";
+
+        // Khởi tạo các chấm chỉ báo
+        function createDots() {
+          for (let i = 0; i < slides.length; i++) {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            if (i === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+          }
+        }
+
+        // Chuyển đến slide cụ thể
+        function goToSlide(index) {
+          const dots = document.querySelectorAll(".dot");
+
+          // Xóa lớp active khỏi tất cả các chấm
+          dots.forEach((dot) => dot.classList.remove("active"));
+
+          // Thêm lớp active vào chấm hiện tại
+          dots[index].classList.add("active");
+
+          currentIndex = index;
+
+          // Áp dụng hiệu ứng dựa vào loại đã chọn
+          if (animationType === "slide") {
+            // Hiệu ứng trượt
+            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+          } else if (animationType === "fade") {
+            // Hiệu ứng mờ dần
+            slides.forEach((slide, i) => {
+              if (i === currentIndex) {
+                slide.style.opacity = 1;
+                slide.style.zIndex = 1;
+              } else {
+                slide.style.opacity = 0;
+                slide.style.zIndex = 0;
+              }
+            });
+          } else if (animationType === "zoom") {
+            // Hiệu ứng phóng to
+            slides.forEach((slide, i) => {
+              if (i === currentIndex) {
+                slide.style.opacity = 1;
+                slide.style.transform = "scale(1)";
+                slide.style.zIndex = 1;
+              } else {
+                slide.style.opacity = 0;
+                slide.style.transform = "scale(0.8)";
+                slide.style.zIndex = 0;
+              }
+            });
+          }
+
+          // Lưu cấu hình vào localStorage
+          saveSettings();
+        }
+
+        // Chuyển đến slide tiếp theo
+        function nextSlide() {
+          currentIndex = (currentIndex + 1) % slides.length;
+          goToSlide(currentIndex);
+        }
+
+        // Chuyển đến slide trước đó
+        function prevSlide() {
+          currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+          goToSlide(currentIndex);
+        }
+
+        // Cập nhật loại hiệu ứng
+        function updateAnimationType() {
+          // Lấy loại hiệu ứng đã chọn
+          for (const type of animationTypes) {
+            if (type.checked) {
+              animationType = type.value;
+              break;
+            }
+          }
+
+          // Thiết lập lại các thuộc tính CSS của slide
+          slides.forEach((slide) => {
+            slide.style.transition = `all ${transitionSlider.value}ms ease-in-out`;
+
+            if (animationType === "slide") {
+              slide.style.opacity = 1;
+              slide.style.transform = "scale(1)";
+              slide.style.position = "relative";
+              slider.style.transition = `transform ${transitionSlider.value}ms ease-in-out`;
+            } else if (animationType === "fade") {
+              slide.style.opacity = 0;
+              slide.style.position = "absolute";
+              slide.style.transform = "scale(1)";
+              slider.style.transition = "none";
+            } else if (animationType === "zoom") {
+              slide.style.opacity = 0;
+              slide.style.transform = "scale(0.8)";
+              slide.style.position = "absolute";
+              slider.style.transition = "none";
+            }
+          });
+
+          // Cập nhật trạng thái hiện tại
+          goToSlide(currentIndex);
+
+          // Lưu cấu hình
+          saveSettings();
+        }
+
+        // Cập nhật thời gian chuyển đổi
+        function updateTransitionDuration() {
+          const duration = transitionSlider.value;
+          transitionValue.textContent = duration;
+
+          // Cập nhật CSS tương ứng
+          if (animationType === "slide") {
+            slider.style.transition = `transform ${duration}ms ease-in-out`;
+          } else {
+            slides.forEach((slide) => {
+              slide.style.transition = `all ${duration}ms ease-in-out`;
+            });
+          }
+
+          // Lưu cấu hình
+          saveSettings();
+        }
+
+        // Thiết lập tự động phát
+        function setupAutoPlay() {
+          clearInterval(autoPlayInterval);
+          if (autoPlayCheckbox.checked) {
+            autoPlayInterval = setInterval(nextSlide, speedSlider.value);
+          }
+
+          // Lưu cấu hình
+          saveSettings();
+        }
+
+        // Cập nhật tốc độ tự động phát
+        function updateSpeed() {
+          speedValue.textContent = speedSlider.value;
+          setupAutoPlay();
+        }
+
+        // Lưu cấu hình slider vào localStorage
+        function saveSettings() {
+          const settings = {
+            animationType: animationType,
+            autoPlay: autoPlayCheckbox.checked,
+            speed: speedSlider.value,
+            transitionDuration: transitionSlider.value,
+          };
+
+          localStorage.setItem(
+            "headerSliderSettings",
+            JSON.stringify(settings)
+          );
+        }
+
+        // Sự kiện xử lý
+        prevBtn.addEventListener("click", prevSlide);
+        nextBtn.addEventListener("click", nextSlide);
+
+        animationTypes.forEach((type) => {
+          type.addEventListener("change", updateAnimationType);
+        });
+
+        autoPlayCheckbox.addEventListener("change", setupAutoPlay);
+        speedSlider.addEventListener("input", updateSpeed);
+        transitionSlider.addEventListener("input", updateTransitionDuration);
+
+        // Tải cấu hình từ localStorage (nếu có)
+        function loadSettings() {
+          const savedSettings = localStorage.getItem("headerSliderSettings");
+
+          if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+
+            // Áp dụng cấu hình đã lưu
+            animationType = settings.animationType;
+            animationTypes.forEach((type) => {
+              if (type.value === animationType) {
+                type.checked = true;
+              }
+            });
+
+            autoPlayCheckbox.checked = settings.autoPlay;
+            speedSlider.value = settings.speed;
+            speedValue.textContent = settings.speed;
+
+            transitionSlider.value = settings.transitionDuration;
+            transitionValue.textContent = settings.transitionDuration;
+          }
+        }
+
+        // Khởi tạo
+        createDots();
+        loadSettings();
+        updateAnimationType();
+        setupAutoPlay();
+        updateTransitionDuration();
+
+        // Tạm dừng tự động chuyển khi di chuột vào slider
+        document
+          .querySelector(".slider-container")
+          .addEventListener("mouseenter", () => {
+            if (autoPlayCheckbox.checked) {
+              clearInterval(autoPlayInterval);
+            }
+          });
+
+        // Tiếp tục tự động chuyển khi di chuột ra khỏi slider
+        document
+          .querySelector(".slider-container")
+          .addEventListener("mouseleave", () => {
+            if (autoPlayCheckbox.checked) {
+              setupAutoPlay();
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

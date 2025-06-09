@@ -1,0 +1,54 @@
+<%- include("../partials/header") %>
+
+<div class="container mt-5">
+  <div class="row">
+    <!-- Cột ảnh -->
+    <div class="col-md-5 text-center">
+      <img
+        src="<%= product.image %>"
+        alt="<%= product.name %>"
+        class="img-fluid rounded shadow-sm"
+        style="max-width: 400px; max-height: 400px"
+      />
+    </div>
+
+    <!-- Cột thông tin sản phẩm -->
+    <div class="col-md-7">
+      <h2><%= product.name %></h2>
+      <p class="text-danger fw-bold fs-4">
+        <%= product.price.toLocaleString() %> VNĐ
+      </p>
+
+      <p><strong>Mô tả:</strong> <%= product.description %></p>
+
+      <form action="/cart/add/<%= product._id %>" method="POST">
+        <div class="mb-3">
+          <label for="size" class="form-label">Chọn kích cỡ:</label>
+          <select name="size" id="size" class="form-select" required>
+            <option value="">-- Chọn size --</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+          </select>
+        </div>
+        <!-- Nhập số lượng -->
+        <div class="mb-3">
+          <label for="quantity" class="form-label">Số lượng:</label>
+          <input
+            type="number"
+            name="quantity"
+            id="quantity"
+            class="form-control"
+            min="1"
+            value="1"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-dark">Thêm vào giỏ hàng</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/footer") %>

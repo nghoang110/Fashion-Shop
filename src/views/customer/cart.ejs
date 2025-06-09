@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ hàng</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+  <%- include("../partials/header") %>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Giỏ hàng của bạn</h2>
+
+  <% if (cart.items.length === 0) { %>
+    <p>Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+  <% } else { %>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Hình ảnh</th>
+          <th>Tên</th>
+          <th>Size</th>
+          <th>Số lượng</th>
+          <th>Giá</th>
+          <th>Thành tiền</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cart.items.forEach(function(item) { %>
+          <tr>
+            <td><img src="<%= item.productId.image %>" width="70" /></td>
+            <td><%= item.productId.name %></td>
+            <td>
+              <form method="POST" action="/cart/update/<%= item._id %>" class="d-flex align-items-center">
+                <select name="size" class="form-select form-select-sm me-2 w-auto">
+                  <% ["S", "M", "L", "XL"].forEach(function(sz) { %>
+                    <option value="<%= sz %>" <%= item.size === sz ? "selected" : "" %>><%= sz %></option>
+                  <% }) %>
+                </select>
+            </td>
+            <td>
+                <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="form-control form-control-sm me-2 w-auto d-inline" />
+            </td>
+            <td><%= item.productId.price.toLocaleString() %>₫</td>
+            <td><%= (item.productId.price * item.quantity).toLocaleString() %>₫</td>
+            <td>
+                <!-- Nút Cập nhật -->
+<button type="submit" class="btn border border-dark text-dark bg-white hover-effect mb-1">Cập nhật</button>
+
+              </form>
+              <form method="POST" action="/cart/remove/<%= item._id %>">
+               <!-- Nút Xoá -->
+<button type="submit" class="btn border border-dark text-dark bg-white hover-effect">Xoá</button>
+
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <!-- Nút thanh toán -->
+    <form method="GET" action="/order/checkout">
+      <div class="text-end mt-3">
+        <button type="submit" class="btn btn-success">Thanh toán</button>
+      </div>
+    </form>
+  <% } %>
+</div>
+
+<%- include("../partials/footer") %>
+<style>
+  .hover-effect:hover {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #000 !important;
+  }
+</style>
+
+</body>
+</html>

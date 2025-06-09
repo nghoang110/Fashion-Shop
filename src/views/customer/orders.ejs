@@ -1,0 +1,31 @@
+<%- include("../partials/header") %>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Đơn hàng của bạn</h2>
+
+  <% if (orders.length === 0) { %>
+  <p>Bạn chưa có đơn hàng nào.</p>
+  <% } else { %> <% orders.forEach(order => { %>
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header d-flex justify-content-between">
+      <strong>Mã đơn: <%= order._id %></strong>
+      <span>Ngày: <%= new Date(order.createdAt).toLocaleString() %></span>
+    </div>
+    <div class="card-body">
+      <p><strong>Trạng thái:</strong> <%= order.status %></p>
+      <p>
+        <strong>Tổng tiền:</strong> <%= order.totalAmount.toLocaleString() %>₫
+      </p>
+
+      <h6 class="mt-3">Sản phẩm:</h6>
+      <ul>
+        <% order.items.forEach(item => { %>
+        <li><%= item.product.name %> x <%= item.quantity %></li>
+        <% }) %>
+      </ul>
+    </div>
+  </div>
+  <% }) %> <% } %>
+</div>
+
+<%- include("../partials/footer") %>

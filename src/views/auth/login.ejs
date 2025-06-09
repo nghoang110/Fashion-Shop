@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đăng nhập</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .login-box {
+        max-width: 420px;
+        margin: auto;
+        margin-top: 80px;
+        padding: 30px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-box">
+      <h3 class="text-center mb-4">Đăng nhập tài khoản</h3>
+      <form action="/login" method="POST">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            required
+            placeholder="Nhập email"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Mật khẩu</label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            required
+            placeholder="Nhập mật khẩu"
+          />
+        </div>
+        <button type="submit" class="btn btn-dark w-100">Đăng nhập</button>
+      </form>
+      <p class="text-center mt-3">
+        Chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
+      </p>
+    </div>
+  </body>
+</html>

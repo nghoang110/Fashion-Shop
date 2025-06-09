@@ -1,0 +1,52 @@
+<%- include("../partials/header") %>
+
+<div class="container mt-5">
+  <h2 class="mb-4">Thanh toán</h2>
+
+  <form method="POST" action="/order/checkout">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Sản phẩm</th>
+          <th>Size</th>
+          <th>Số lượng</th>
+          <th>Giá</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% cart.items.forEach(item => { %>
+        <tr>
+          <td><%= item.productId.name %></td>
+          <td><%= item.size %></td>
+          <td><%= item.quantity %></td>
+          <td>
+            <%= (item.productId.price * item.quantity).toLocaleString() %>₫
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+
+    <h5 class="mt-3">Tổng tiền: <%= totalAmount.toLocaleString() %>₫</h5>
+
+    <div class="mt-4">
+      <label class="form-label">Địa chỉ nhận hàng</label>
+      <input type="text" name="address" class="form-control" required />
+
+      <label class="form-label mt-3">Số điện thoại</label>
+      <input type="text" name="phone" class="form-control" required />
+
+      <label class="form-label mt-3">Phương thức thanh toán</label>
+      <select name="paymentMethod" class="form-select" required>
+        <option value="cod">Thanh toán khi nhận hàng</option>
+        <option value="banking">Chuyển khoản ngân hàng</option>
+      </select>
+    </div>
+
+    <div class="mt-4 text-end">
+      <button type="submit" class="btn btn-success">Xác nhận đặt hàng</button>
+    </div>
+  </form>
+</div>
+
+<%- include("../partials/footer") %>

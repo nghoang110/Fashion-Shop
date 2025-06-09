@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quản lý đơn hàng</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Header riêng cho Admin -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/admin">ADMIN PANEL</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarAdmin"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarAdmin">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/admin/products">Quản lý sản phẩm</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/orders">Quản lý đơn hàng</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/categories">Quản lý danh mục</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">Trang người dùng</a></li>
+            <li class="nav-item"><a class="nav-link" href="/logout">Đăng xuất</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Nội dung đơn hàng -->
+    <div class="container mt-5">
+      <h2 class="mb-4">Quản lý đơn hàng</h2>
+
+      <% if (orders.length === 0) { %>
+        <p>Chưa có đơn hàng nào.</p>
+      <% } else { %>
+        <% orders.forEach(order => { %>
+          <div class="card mb-3 shadow-sm" style="max-height: 450px; margin: auto;">
+
+            <div class="card-header d-flex justify-content-between">
+              <strong>Đơn: <%= order._id %></strong>
+              <span><%= new Date(order.createdAt).toLocaleString() %></span>
+            </div>
+            <div class="card-body">
+              <p><strong>Khách hàng:</strong> <%= order.user.name %> (<%= order.user.email %>)</p>
+              <p><strong>Địa chỉ:</strong> <%= order.address %></p>
+              <p><strong>SĐT:</strong> <%= order.phone %></p>
+              <p><strong>Thanh toán:</strong> <%= order.paymentMethod %></p>
+              <p><strong>Trạng thái hiện tại:</strong> <%= order.status %></p>
+
+              <form method="POST" action="/admin/orders/<%= order._id %>/status" class="d-flex align-items-center mt-2">
+                <select name="status" class="form-select w-auto me-2">
+                  <% ["pending", "processing", "shipped", "delivered", "cancelled"].forEach(stat => { %>
+                    <option value="<%= stat %>" <%= order.status === stat ? "selected" : "" %>><%= stat %></option>
+                  <% }) %>
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm">Cập nhật</button>
+              </form>
+
+              <h6 class="mt-4">Sản phẩm:</h6>
+              <div class="row">
+                <% order.items.forEach(item => { %>
+                  <div class="col-md-6 d-flex align-items-center mb-2">
+                    <img
+                      src="<%= item.product.image %>"
+                      alt="<%= item.product.name %>"
+                      width="60"
+                      height="60"
+                      class="me-3 rounded shadow-sm"
+                    />
+                    <div>
+                      <strong><%= item.product.name %></strong><br />
+                      Số lượng: <%= item.quantity %>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+
+              <p class="fw-bold mt-2">Tổng tiền: <%= order.totalAmount.toLocaleString() %>₫</p>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center p-3 mt-5">
+      <div class="container">
+        © <%= new Date().getFullYear() %> Admin Panel - Fashion Shop
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

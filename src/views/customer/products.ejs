@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <%- include('../partials/header') %>
+
+    <div class="container mt-5">
+      <h2 class="mb-4">Tất cả sản phẩm</h2>
+      <div class="container mt-4">
+  <form method="GET" action="/products" class="row g-3 mb-4">
+    <div class="col-md-6">
+      <input
+        type="text"
+        name="search"
+        value="<%= search %>"
+        class="form-control"
+        placeholder="Tìm kiếm sản phẩm..."
+      />
+    </div>
+<div class="col-md-4">
+    <!-- ✅ Danh mục đa cấp -->
+    <select name="category" class="form-select">
+      <option value="">-- Tất cả danh mục --</option>
+      <% categories.forEach(cat => { %>
+        <% if (!cat.parent) { %>
+          <option value="<%= cat._id %>" <%= selectedCategory === cat._id.toString() ? "selected" : "" %>><%= cat.name %></option>
+          <% categories
+            .filter(c => c.parent && c.parent.toString() === cat._id.toString())
+            .forEach(sub => { %>
+            <option value="<%= sub._id %>" <%= selectedCategory === sub._id.toString() ? "selected" : "" %>>
+              &nbsp;&nbsp;-- <%= sub.name %>
+            </option>
+          <% }) %>
+        <% } %>
+      <% }) %>
+    </select>
+  </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-dark w-100">Lọc</button>
+    </div>
+  </form>
+</div>
+
+      <div class="row">
+        <% products.forEach(product => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img
+              src="<%= product.image %>"
+              class="card-img-top"
+              alt="<%= product.name %>"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text"><%= product.description %></p>
+              <p class="card-text text-danger">
+                <strong><%= product.price.toLocaleString() %> VNĐ</strong>
+              </p>
+          
+              <a
+                href="/product/<%= product._id %>"
+                class="btn btn-outline-dark mt-auto"
+                >Xem chi tiết</a
+              >
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+  </body>
+</html>
